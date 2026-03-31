@@ -1,7 +1,7 @@
 name: Full Selenium CI Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch: # Cho phép chạy thủ công từ nút trên GitHub
 
 jobs:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        [cite_start]browser: [chrome, firefox] # Chạy song song 2 trình duyệt [cite: 432, 1099]
+        browser: [chrome, firefox] # Chạy song song 2 trình duyệt
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
           APP_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
 
       - name: Upload Allure Results
-        [cite_start]if: always() # Luôn lưu kết quả kể cả khi test fail [cite: 446, 1121]
+        if: always() # Luôn lưu kết quả kể cả khi test fail
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-${{ matrix.browser }}
