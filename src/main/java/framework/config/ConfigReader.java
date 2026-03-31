@@ -5,17 +5,19 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigReader {
-    private static final Properties props = new Properties();
     private static ConfigReader instance;
+    private Properties properties;
 
     private ConfigReader() {
-        String env = System.getProperty("env", "dev");
-        String file = "src/test/resources/config-" + env + ".properties";
-        try (FileInputStream fis = new FileInputStream(file)) {
-            props.load(fis);
-            System.out.println("[ConfigReader] Đang dùng môi trường: " + env);
+        properties = new Properties();
+        try {
+            // Đọc file config tương ứng với môi trường (mặc định là dev)
+            String env = System.getProperty("env", "dev");
+            String configFilePath = "src/test/resources/config-" + env + ".properties";
+            FileInputStream fileInputStream = new FileInputStream(configFilePath);
+            properties.load(fileInputStream);
         } catch (IOException e) {
-            throw new RuntimeException("Không tìm thấy config: " + file);
+            e.printStackTrace();
         }
     }
 
@@ -26,9 +28,26 @@ public class ConfigReader {
         return instance;
     }
 
-    public String getBaseUrl() { return props.getProperty("base.url"); }
-    public String getBrowser() { return props.getProperty("browser", "chrome"); }
-    public int getExplicitWait() { return Integer.parseInt(props.getProperty("explicit.wait", "15")); }
-    public int getRetryCount() { return Integer.parseInt(props.getProperty("retry.count", "1")); }
-    public String getScreenshotPath() { return props.getProperty("screenshot.path"); }
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    // --- LOGIC CHO BÀI 3: ĐỌC GITHUB SECRETS ---
+    public String getUsername() {
+        // Ưu tiên 1: Đọc từ biến môi trường (khi chạy trên GitHub Actions)
+        String username = System.getenv("APP_USERNAME");
+        if (username == null || username.isBlank()) {
+            // Ưu tiên 2: Fallback đọc từ file properties (khi chạy ở máy Local)
+            username = getProperty("app.username");
+        }
+        return username;
+    }
+
+    public String getPassword() {
+        String password = System.getenv("APP_PASSWORD");
+        if (password == null || password.isBlank()) {
+            password = getProperty("app.password");
+        }
+        return password;
+    }
 }
