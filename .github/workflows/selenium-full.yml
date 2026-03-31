@@ -64,8 +64,8 @@ jobs:
           merge-multiple: true
 
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
         if: always()
+        uses: simple-elf/allure-report-action@v1.13
         with:
           allure_results: allure-results
           gh_pages: gh-pages
@@ -73,9 +73,10 @@ jobs:
           allure_history: allure-history
 
       - name: Deploy report to gh-pages
-        if: always()
+        if: always() && github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: allure-history
+          force_orphan: true
