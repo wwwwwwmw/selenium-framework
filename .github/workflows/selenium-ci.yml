@@ -10,6 +10,10 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+      fail-fast: false # Nếu 1 trình duyệt fail, trình duyệt kia vẫn tiếp tục chạy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,7 +27,7 @@ jobs:
 
       - name: Chạy Selenium Tests
         # Lệnh chạy test chỉ định rõ file xml và browser
-        run: mvn clean test -Dbrowser=chrome -Denv=dev -DsuiteXmlFile=testng-smoke.xml
+        run: mvn clean test -Dbrowser=${{ matrix.browser }} -Denv=dev -DsuiteXmlFile=testng-smoke.xml
         env:
           # Chuẩn bị sẵn biến môi trường cho Bài 3 (dù hiện tại có thể test chưa dùng tới)
           APP_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
@@ -32,7 +36,7 @@ jobs:
         if: always() # Chạy bước này dù test pass hay fail
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ matrix.browser }} # Tạo 2 file artifact riêng biệt cho 2 trình duyệt
           path: |
             target/surefire-reports/
             target/screenshots/
