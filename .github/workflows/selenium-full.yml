@@ -43,7 +43,6 @@ jobs:
       - name: Download Results
         uses: actions/download-artifact@v4
         with:
-          # Tải tất cả kết quả vào chung 1 thư mục
           path: allure-results
           merge-multiple: true
       - name: Generate & Publish Allure Report
@@ -52,4 +51,4 @@ jobs:
           allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Cấp quyền token chính chủ
