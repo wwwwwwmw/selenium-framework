@@ -2,15 +2,17 @@ name: Full Selenium CI Pipeline
 on:
   push:
     branches: [ master ]
-  workflow_dispatch: # Cho phép chạy thủ công từ nút trên GitHub
+  workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [chrome, firefox] # Chạy song song 2 trình duyệt
+        browser: [chrome, firefox]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -20,15 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
-      - name: Run Selenium Tests
+      - name: Run tests
         run: mvn clean test -Dbrowser=${{ matrix.browser }} -DsuiteXmlFile=testng-smoke.xml
         env:
           APP_USERNAME: ${{ secrets.SAUCEDEMO_USERNAME }}
           APP_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
-
       - name: Upload Allure Results
-        if: always() # Luôn lưu kết quả kể cả khi test fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-${{ matrix.browser }}
@@ -43,11 +43,13 @@ jobs:
       - name: Download Results
         uses: actions/download-artifact@v4
         with:
+          # Tải tất cả kết quả vào chung 1 thư mục
           path: allure-results
-
+          merge-multiple: true
       - name: Generate & Publish Allure Report
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
+          github_token: ${{ secrets.GITHUB_TOKEN }}
