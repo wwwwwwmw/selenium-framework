@@ -17,7 +17,7 @@ public class ConfigReader {
             FileInputStream fileInputStream = new FileInputStream(configFilePath);
             properties.load(fileInputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Không tìm thấy file cấu hình: " + e.getMessage());
         }
     }
 
@@ -32,17 +32,42 @@ public class ConfigReader {
         return properties.getProperty(key);
     }
 
-    // --- LOGIC CHO BÀI 3: ĐỌC GITHUB SECRETS ---
+    /**
+     * Lấy URL cơ sở của ứng dụng [cite: 22, 221]
+     */
+    public String getBaseUrl() {
+        return getProperty("base.url");
+    }
+
+    /**
+     * Lấy đường dẫn lưu ảnh chụp màn hình [cite: 44, 85]
+     */
+    public String getScreenshotPath() {
+        return getProperty("screenshot.path");
+    }
+
+    /**
+     * Lấy số lần chạy lại (Retry) khi test thất bại
+     */
+    public int getRetryCount() {
+        String count = getProperty("retry.count");
+        return (count != null) ? Integer.parseInt(count) : 0;
+    }
+
+    /**
+     * Lấy Username (Ưu tiên GitHub Secrets cho Bài 3) [cite: 21, 199]
+     */
     public String getUsername() {
-        // Ưu tiên 1: Đọc từ biến môi trường (khi chạy trên GitHub Actions)
         String username = System.getenv("APP_USERNAME");
         if (username == null || username.isBlank()) {
-            // Ưu tiên 2: Fallback đọc từ file properties (khi chạy ở máy Local)
             username = getProperty("app.username");
         }
         return username;
     }
 
+    /**
+     * Lấy Password (Ưu tiên GitHub Secrets cho Bài 3) [cite: 21, 200]
+     */
     public String getPassword() {
         String password = System.getenv("APP_PASSWORD");
         if (password == null || password.isBlank()) {
