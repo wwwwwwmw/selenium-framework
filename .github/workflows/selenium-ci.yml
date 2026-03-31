@@ -1,0 +1,39 @@
+name: Selenium Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Cho phép bấm nút chạy thủ công trên GitHub
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cài Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven # Cache để lần sau build nhanh hơn
+
+      - name: Chạy Selenium Tests
+        # Lệnh chạy test chỉ định rõ file xml và browser
+        run: mvn clean test -Dbrowser=chrome -Denv=dev -DsuiteXmlFile=testng-smoke.xml
+        env:
+          # Chuẩn bị sẵn biến môi trường cho Bài 3 (dù hiện tại có thể test chưa dùng tới)
+          APP_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
+
+      - name: Lưu kết quả test
+        if: always() # Chạy bước này dù test pass hay fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            target/surefire-reports/
+            target/screenshots/
+          retention-days: 30
