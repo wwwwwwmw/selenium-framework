@@ -3,7 +3,8 @@ on:
   push:
     branches: [ master ]
   workflow_dispatch: # Cho phép chạy thủ công từ nút trên GitHub
-
+permissions:
+  contents: write
 jobs:
   test:
     runs-on: ubuntu-latest
