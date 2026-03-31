@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","348","Đăng nhập từ file Excel","Smoke Test Suite","Tue Mar 31 09:29:23 UTC 2026","passed","Tue Mar 31 09:29:23 UTC 2026","tests.LoginTest","Login Smoke Tests","tests.LoginTest","testLoginWithExcel"
+"","407","Đăng nhập từ file Excel","Smoke Test Suite","Tue Mar 31 09:29:27 UTC 2026","passed","Tue Mar 31 09:29:27 UTC 2026","tests.LoginTest","Login Smoke Tests","tests.LoginTest","testLoginWithExcel"
+"","5430","Đăng nhập từ file Excel","Smoke Test Suite","Tue Mar 31 09:29:30 UTC 2026","passed","Tue Mar 31 09:29:36 UTC 2026","tests.LoginTest","Login Smoke Tests","tests.LoginTest","testLoginWithExcel"
+"Sử dụng GitHub Secrets để bảo vệ thông tin đăng nhập nhạy cảm","626","BÀI 3: Đăng nhập bằng tài khoản bảo mật (GitHub Secrets)","Smoke Test Suite","Tue Mar 31 09:29:39 UTC 2026","passed","Tue Mar 31 09:29:39 UTC 2026","tests.LoginTest","Login Smoke Tests","tests.LoginTest","testLoginWithSecrets"
